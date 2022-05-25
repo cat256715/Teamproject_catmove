@@ -11,14 +11,13 @@ using namespace bangtal;
 
 SceneID start_scene, main_scene, end_scene;
 ObjectID playscene; //배경화면 오브젝트
-ObjectID cat, silver, gold;
-int coin_silverX = 300, coin_silverY = 300;
-int coin_goldX = 500, coin_goldY = 500;
-int coin_count;
+ObjectID cat, silver, gold; //움직이는 오브젝트(고양이), 은색 코인, 금색 코인 선언
+int coin_silverX = 300, coin_silverY = 300; //은색 코인 선언
+int coin_goldX = 500, coin_goldY = 500; //금색 코인 선언
+int coin_count; //점수
 
-TimerID timerAni = createTimer(ANIMATION_TIME);
-TimerID timerRelease = createTimer(DELAY_TIME);	//점프키 릴리즈 처리 타이머
-TimerID sceneTimer = createTimer(10000);
+TimerID timerRelease = createTimer(DELAY_TIME);	//점프키 릴리즈 처리 타이머(점프 시간)
+TimerID sceneTimer = createTimer(10000); //게임 총 시간 세는 타이머
 
 int x = 200, y = 50;	//초기 물체 좌표
 int dx = 0, dy = 0;		//물체 이동 좌표 정의
@@ -31,8 +30,8 @@ void timerCallback(TimerID timer);	//타이머 콜백 함수
 //장애물
 ObjectID ob[4];
 int ob_x[4]; //장애물의 x좌표
-
 int ob_dx = 0, speed = 20;
+
 TimerID ob_speed_timer; //게임이 진행될수록 장애물이 이동하는 속도가 빨라지게 조절하는 타이머
 TimerID ob_timer; //장애물 배치, 장애물이 이동하도록 하는 타이머
 
@@ -82,6 +81,7 @@ void timerCallback(TimerID timer)
 		y = 50;
 		locateObject(cat, main_scene, x, y);	//움직이는 물체 다시 돌아오게 만들기
 	}
+
 	if (timer == ob_timer) {
 		for (int i = 0; i < 4; i++) {
 			hideObject(ob[i]);//필요없을지도
@@ -97,9 +97,9 @@ void timerCallback(TimerID timer)
 					ob_x[i] = 1800;
 					int n = rand() % 3;
 					switch (n) {
-					case 0: setObjectImage(ob[i], "gift.jpg"); break;
-					case 1: setObjectImage(ob[i], "end.png"); break;
-					case 2: setObjectImage(ob[i], "tree.png"); break;
+					case 0: setObjectImage(ob[i], "images\\gift.png"); break;
+					case 1: setObjectImage(ob[i], "images\\end_button.png"); break;
+					case 2: setObjectImage(ob[i], "images\\tree.png"); break;
 					}
 					break;
 					locateObject(ob[i], main_scene, ob_x[i], 0);
@@ -163,19 +163,18 @@ int main() {
 	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
 
 	start_scene = createScene("시작 화면", "");
-	main_scene = createScene("게임 화면", "");
+	main_scene = createScene("게임 화면", "images\\main_scene.png");
 	end_scene = createScene("종료 화면", "");
 
 	setTimerCallback(timerCallback);
 	setKeyboardCallback(keyboardCallback);
-
-	main_scene = createScene("main_scene", "images\\Background.png");
 
 	playscene = createObject("playscene.png");	//배경화면
 	locateObject(playscene, main_scene, 0, 0);
 	showObject(playscene);
 
 	cat = createObject("cat", "images\\cat.png", main_scene, x, y, true);
+	scaleObject(cat, 0.3f);
 	silver = createObject("silver", "images\\silver.png", main_scene, coin_silverX, coin_silverY, true);
 	gold = createObject("gold", "images\\gold.png", main_scene, coin_goldX, coin_goldY, true);
 
@@ -190,6 +189,6 @@ int main() {
 	}
 
 	startTimer(ob_timer);
-	startTimer(timerAni);
-	startGame(start_scene);
+	//startGame(start_scene);
+	startGame(main_scene);
 }
