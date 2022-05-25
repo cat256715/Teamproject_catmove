@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "기컴프 그룹과제", "기컴프 그룹과제.vcxproj", "{EFB33AD0-0057-4FA1-9A6A-62CE324AACA6}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "기컴프 그룹과제 Setup", "..\기컴프 그룹과제 Setup\기컴프 그룹과제 Setup.vdproj", "{3CB8FA4C-0E5E-4219-91E7-D25CA6AB6C5C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFB33AD0-0057-4FA1-9A6A-62CE324AACA6}.Debug|x64.ActiveCfg = Debug|x64
+		{EFB33AD0-0057-4FA1-9A6A-62CE324AACA6}.Debug|x64.Build.0 = Debug|x64
+		{EFB33AD0-0057-4FA1-9A6A-62CE324AACA6}.Debug|x86.ActiveCfg = Debug|Win32
+		{EFB33AD0-0057-4FA1-9A6A-62CE324AACA6}.Debug|x86.Build.0 = Debug|Win32
+		{EFB33AD0-0057-4FA1-9A6A-62CE324AACA6}.Release|x64.ActiveCfg = Release|x64
+		{EFB33AD0-0057-4FA1-9A6A-62CE324AACA6}.Release|x64.Build.0 = Release|x64
+		{EFB33AD0-0057-4FA1-9A6A-62CE324AACA6}.Release|x86.ActiveCfg = Release|Win32
+		{EFB33AD0-0057-4FA1-9A6A-62CE324AACA6}.Release|x86.Build.0 = Release|Win32
+		{3CB8FA4C-0E5E-4219-91E7-D25CA6AB6C5C}.Debug|x64.ActiveCfg = Debug
+		{3CB8FA4C-0E5E-4219-91E7-D25CA6AB6C5C}.Debug|x86.ActiveCfg = Debug
+		{3CB8FA4C-0E5E-4219-91E7-D25CA6AB6C5C}.Release|x64.ActiveCfg = Release
+		{3CB8FA4C-0E5E-4219-91E7-D25CA6AB6C5C}.Release|x86.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {91BC31FF-4C9F-403E-B5AB-531D6D57FF4B}
+	EndGlobalSection
+EndGlobal
