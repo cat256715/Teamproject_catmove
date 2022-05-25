@@ -162,6 +162,10 @@ int main() {
 	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
 
+	start_scene = createScene("시작 화면", "");
+	main_scene = createScene("게임 화면", "");
+	end_scene = createScene("종료 화면", "");
+
 	setTimerCallback(timerCallback);
 	setKeyboardCallback(keyboardCallback);
 
