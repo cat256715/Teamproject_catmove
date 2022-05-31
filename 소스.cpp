@@ -205,13 +205,9 @@ int main() {
 	silver = createObject("silver", "images\\silver.png", main_scene, coin_silverX, coin_silverY, true);
 	gold = createObject("gold", "images\\gold.png", main_scene, coin_goldX, coin_goldY, true);
 
-	bar = createObject("images/bar.png");	//바
-	locateObject(bar, main_scene, 320, 680);
-	showObject(bar);
-	barCh = createObject("images/cat.png");	//바를 움직이는 캐릭터
+	bar = createObject("bar","images\\bar.png",main_scene, 320, 680, true);	//바
+	barCh = createObject("barCh","images\\cat.png", main_scene, 320, 680, true);	//바를 움직이는 캐릭터
 	scaleObject(barCh, 0.25f);
-	locateObject(barCh, main_scene, 320, 680);
-	showObject(barCh);
 
 	CoinCheck();
 
@@ -230,6 +226,5 @@ int main() {
 	startTimer(ob_speed_timer);
 	startTimer(barTimer);
 
-	//startGame(start_scene);
-	startGame(main_scene);
+	startGame(start_scene);
 }
