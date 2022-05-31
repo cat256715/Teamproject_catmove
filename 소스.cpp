@@ -10,14 +10,20 @@ using namespace bangtal;
 #define DELAY_TIME 0.2f	//점프키:릴리즈 처리 시간 정의
 
 SceneID start_scene, main_scene, end_scene;
-ObjectID playscene; //배경화면 오브젝트
 ObjectID cat, silver, gold; //움직이는 오브젝트(고양이), 은색 코인, 금색 코인 선언
+
+ObjectID bar;	//거리 바 오브젝트 정의
+ObjectID barCh;	//바를 움직이는 캐릭터 정의
+
 int coin_silverX = 300, coin_silverY = 300; //은색 코인 선언
 int coin_goldX = 500, coin_goldY = 500; //금색 코인 선언
 int coin_count; //점수
 
+double barCh_x = 320;	//바를 움직이는 캐릭터의 초기 좌표 정의
+
 TimerID timerRelease = createTimer(DELAY_TIME);	//점프키 릴리즈 처리 타이머(점프 시간)
 TimerID sceneTimer = createTimer(10000); //게임 총 시간 세는 타이머
+TimerID barTimer = createTimer(0.01f);	//바를 움직이는 캐릭터 타이머 정의
 
 int x = 200, y = 50;	//초기 물체 좌표
 int dx = 0, dy = 0;		//물체 이동 좌표 정의
@@ -30,10 +36,12 @@ void timerCallback(TimerID timer);	//타이머 콜백 함수
 //장애물
 ObjectID ob[4];
 int ob_x[4]; //장애물의 x좌표
-int ob_dx = 0, speed = 20;
+int ob_dx = 0, speed = 7;
+int ob_check[4];//장애물의 이미지를 확인하기 위한 변수
 
 TimerID ob_speed_timer; //게임이 진행될수록 장애물이 이동하는 속도가 빨라지게 조절하는 타이머
 TimerID ob_timer; //장애물 배치, 장애물이 이동하도록 하는 타이머
+TimerID check_timer; //장애물과 쿠키의 충돌 확인하는 타이머
 
 //오브젝트 선언하는 함수
 ObjectID createObject(const char* name, const char* image, SceneID scene, int x, int y, bool shown) {
@@ -82,78 +90,102 @@ void timerCallback(TimerID timer)
 		locateObject(cat, main_scene, x, y);	//움직이는 물체 다시 돌아오게 만들기
 	}
 
+	if (timer == barTimer) {	//바를 움직이는 함수
+		hideObject(barCh);
+		barCh_x = barCh_x + 0.076;
+		locateObject(barCh, main_scene, barCh_x, 680);
+		showObject(barCh);
+	}
+
+	setTimer(barTimer, 0.01f);	//바를 움직이는 시간 간격
+	startTimer(barTimer);	//바 타이머 시작
+
 	if (timer == ob_timer) {
 		for (int i = 0; i < 4; i++) {
 			hideObject(ob[i]);//필요없을지도
 			if (ob_x[i] >= -100) {
 				ob_x[i] -= speed;
-				locateObject(ob[i], main_scene, ob_x[i], 0);
+				locateObject(ob[i], main_scene, ob_x[i], 50);
 				showObject(ob[i]);//필요없을지도
 			}
 			else if (ob_x[i] < -100) {
-				startTimer(ob_speed_timer);
-
 				if (i == 0) {
 					ob_x[i] = 1800;
-					int n = rand() % 3;
+					int n = rand() % 2;
 					switch (n) {
-					case 0: setObjectImage(ob[i], "images\\gift.png"); break;
-					case 1: setObjectImage(ob[i], "images\\end_button.png"); break;
-					case 2: setObjectImage(ob[i], "images\\tree.png"); break;
+					case 0: setObjectImage(ob[i], "images\\ob_low.png"); ob_check[i] = 1; break;
+					case 1: setObjectImage(ob[i], "images\\ob_high.png"); ob_check[i] = 2; break;
 					}
 					break;
-					locateObject(ob[i], main_scene, ob_x[i], 0);
+					locateObject(ob[i], main_scene, ob_x[i], 50);
 					showObject(ob[i]);
 
 				}
 
 
 				else if (i == 1) {
-					int n = rand() % 3;
+					int n = rand() % 2;
 					switch (n) {
-					case 0: ob_x[i] = ob_x[0] + 400 + ob_dx, setObjectImage(ob[i], "gift.jpg"); break;
-					case 1: ob_x[i] = ob_x[0] + 450 + ob_dx, setObjectImage(ob[i], "end.png"); break;
-					case 2: ob_x[i] = ob_x[0] + 500 + ob_dx, setObjectImage(ob[i], "tree.png"); break;
+					case 0: ob_x[i] = ob_x[0] + 400 + ob_dx, setObjectImage(ob[i], "images\\ob_low.png"); ob_check[i] = 1; break;
+					case 1: ob_x[i] = ob_x[0] + 500 + ob_dx, setObjectImage(ob[i], "images\\ob_high.png"); ob_check[i] = 2; break;
 					}
-					locateObject(ob[i], main_scene, ob_x[i], 0);
+					locateObject(ob[i], main_scene, ob_x[i], 50);
 					showObject(ob[i]);
 				}
 
 				else if (i == 2) {
-					int n = rand() % 3;
+					int n = rand() % 2;
 					switch (n) {
-					case 0: ob_x[i] = ob_x[1] + 400 + ob_dx, setObjectImage(ob[i], "gift.jpg"); break;
-					case 1: ob_x[i] = ob_x[1] + 450 + ob_dx, setObjectImage(ob[i], "tree.png"); break;
-					case 2: ob_x[i] = ob_x[1] + 500 + ob_dx, setObjectImage(ob[i], "end.png"); break;
+					case 0: ob_x[i] = ob_x[1] + 400 + ob_dx, setObjectImage(ob[i], "images\\ob_low.png"); ob_check[i] = 1; break;
+					case 1: ob_x[i] = ob_x[1] + 500 + ob_dx, setObjectImage(ob[i], "images\\ob_high.png"); ob_check[i] = 2; break;
 					}
-					locateObject(ob[i], main_scene, ob_x[i], 0);
+					locateObject(ob[i], main_scene, ob_x[i], 50);
 					showObject(ob[i]);
 
 				}
 				else if (i == 3) {
-					int n = rand() % 3;
+					int n = rand() % 2;
 					switch (n) {
-					case 0: ob_x[i] = ob_x[2] + 400 + ob_dx, setObjectImage(ob[i], "gift.jpg"); break;
-					case 1: ob_x[i] = ob_x[2] + 450 + ob_dx, setObjectImage(ob[i], "tree.png"); break;
-					case 2: ob_x[i] = ob_x[2] + 500 + ob_dx, setObjectImage(ob[i], "end.png"); break;
+					case 0: ob_x[i] = ob_x[2] + 400 + ob_dx, setObjectImage(ob[i], "images\\ob_low.png"); ob_check[i] = 1; break;
+					case 1: ob_x[i] = ob_x[2] + 500 + ob_dx, setObjectImage(ob[i], "images\\ob_high.png"); ob_check[i] = 2; break;
 					}
-					locateObject(ob[i], main_scene, ob_x[i], 0);
+					locateObject(ob[i], main_scene, ob_x[i], 50);
 					showObject(ob[i]);
 
 				}
 			}
 
 		}
-		setTimer(ob_timer, 0.1f);
+		setTimer(ob_timer, 0.01f);
 		startTimer(ob_timer);
 	}
 	if (timer == ob_speed_timer) {
 		if (speed <= 50) {
-			x += 2;
-			speed += 2;
-			setTimer(ob_speed_timer, 0.1f);
+			ob_dx += 1;
+			speed += 1;
+			setTimer(ob_speed_timer, 5.0f);
 
 		}
+	}
+
+	if (timer == check_timer) {   //0.01초마다 충돌 확인, check number를 이용해서 장애물의 이미지를 구분, 쿠키 점프할 때 중간 위치변경이 없어서 y = 50, 200을 기준으로 충돌 확인함.
+
+		for (int i = 0; i < 4; i++) {
+			if (ob_x[i] < 271 && ob_x[i]> 74) {
+				if (ob_check[i] == 1) {  // 낮은 장애물의 경우
+					if (y == 50) {
+						endGame();
+					}
+				}
+				else if (ob_check[i] == 2) {
+					if (y == 50 || y == 200) {  //높은 장애물의 경우
+						endGame();
+					}
+				}
+			}
+		}
+		setTimer(check_timer, 0.01f);
+		startTimer(check_timer);
 	}
 }
 
@@ -169,26 +201,35 @@ int main() {
 	setTimerCallback(timerCallback);
 	setKeyboardCallback(keyboardCallback);
 
-	playscene = createObject("playscene.png");	//배경화면
-	locateObject(playscene, main_scene, 0, 0);
-	showObject(playscene);
-
 	cat = createObject("cat", "images\\cat.png", main_scene, x, y, true);
-	scaleObject(cat, 0.3f);
 	silver = createObject("silver", "images\\silver.png", main_scene, coin_silverX, coin_silverY, true);
 	gold = createObject("gold", "images\\gold.png", main_scene, coin_goldX, coin_goldY, true);
 
+	bar = createObject("images/bar.png");	//바
+	locateObject(bar, main_scene, 320, 680);
+	showObject(bar);
+	barCh = createObject("images/cat.png");	//바를 움직이는 캐릭터
+	scaleObject(barCh, 0.25f);
+	locateObject(barCh, main_scene, 320, 680);
+	showObject(barCh);
+
 	CoinCheck();
 
-	ob_speed_timer = createTimer(0.1f);
+	ob_speed_timer = createTimer(5.0f);
 	ob_timer = createTimer(0.01f);
+	check_timer = createTimer(0.01f);
 
 	for (int i = 0; i < 4; i++) {
 		ob_x[i] = 500 + 500 * i;
-		;		ob[i] = createObject("ob_block","images\\gift.png", main_scene, ob_x[i], 0, true);
+		ob_check[i] = 1;
+		ob[i] = createObject("ob_block", "images\\ob_low.png", main_scene, ob_x[i], 50, true);
 	}
 
 	startTimer(ob_timer);
+	startTimer(check_timer);
+	startTimer(ob_speed_timer);
+	startTimer(barTimer);
+
 	//startGame(start_scene);
 	startGame(main_scene);
 }
