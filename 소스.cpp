@@ -171,7 +171,7 @@ void timerCallback(TimerID timer)
 	if (timer == check_timer) {   //0.01초마다 충돌 확인, check number를 이용해서 장애물의 이미지를 구분, 쿠키 점프할 때 중간 위치변경이 없어서 y = 50, 200을 기준으로 충돌 확인함.
 
 		for (int i = 0; i < 4; i++) {
-			if (ob_x[i] < 271 && ob_x[i]> 74) {
+			if (ob_x[i] < 271 && ob_x[i]> 94) {
 				if (ob_check[i] == 1) {  // 낮은 장애물의 경우
 					if (y == 50) {
 						endGame();
@@ -194,9 +194,9 @@ int main() {
 	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
 
-	start_scene = createScene("시작 화면", "");
+	start_scene = createScene("시작 화면", "images\\main_scene.png");
 	main_scene = createScene("게임 화면", "images\\main_scene.png");
-	end_scene = createScene("종료 화면", "");
+	end_scene = createScene("종료 화면", "images\\main_scene.png");
 
 	setTimerCallback(timerCallback);
 	setKeyboardCallback(keyboardCallback);
