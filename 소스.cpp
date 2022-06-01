@@ -10,13 +10,15 @@ using namespace bangtal;
 #define DELAY_TIME 0.2f	//Á¡ÇÁÅ°:¸±¸®Áî Ã³¸® ½Ã°£ Á¤ÀÇ
 
 SceneID start_scene, main_scene, end_scene;
-ObjectID cat, silver, gold; //¿òÁ÷ÀÌ´Â ¿ÀºêÁ§Æ®(°í¾çÀÌ), Àº»ö ÄÚÀÎ, ±İ»ö ÄÚÀÎ ¼±¾ğ
+ObjectID cat, silver[4], gold[4]; //¿òÁ÷ÀÌ´Â ¿ÀºêÁ§Æ®(°í¾çÀÌ), Àº»ö ÄÚÀÎ, ±İ»ö ÄÚÀÎ ¼±¾ğ
+
+ObjectID start_button, end_button; //½ºÅ¸Æ® ¹öÆ°, ¿£µå ¹öÆ°
 
 ObjectID bar;	//°Å¸® ¹Ù ¿ÀºêÁ§Æ® Á¤ÀÇ
 ObjectID barCh;	//¹Ù¸¦ ¿òÁ÷ÀÌ´Â Ä³¸¯ÅÍ Á¤ÀÇ
 
-int coin_silverX = 300, coin_silverY = 300; //Àº»ö ÄÚÀÎ ¼±¾ğ
-int coin_goldX = 500, coin_goldY = 500; //±İ»ö ÄÚÀÎ ¼±¾ğ
+int coin_silverX[4], coin_silverY[4]; //Àº»ö ÄÚÀÎ ¼±¾ğ, Àå¾Ö¹° À§¿¡ ¹èÄ¡ÇÒ °ÍÀÌ¹Ç·Î Àå¾Ö¹°°ú ¸¶Âù°¡Áö·Î ¹è¿­·Î ¼±¾ğ
+int coin_goldX[4], coin_goldY[4]; //±İ»ö ÄÚÀÎ ¼±¾ğ, Àº»ö ÄÚÀÎ°ú ¸¶Âù°¡Áö
 int coin_count; //Á¡¼ö
 
 double barCh_x = 320;	//¹Ù¸¦ ¿òÁ÷ÀÌ´Â Ä³¸¯ÅÍÀÇ ÃÊ±â ÁÂÇ¥ Á¤ÀÇ
@@ -32,6 +34,7 @@ KeyState keyState = KeyState::KEY_RELEASED;	//Å°º¸µå »óÅÂ Á¤ÀÇ
 
 void keyboardCallback(KeyCode code, KeyState state);	//Å°º¸µå Äİ¹é ÇÔ¼ö
 void timerCallback(TimerID timer);	//Å¸ÀÌ¸Ó Äİ¹é ÇÔ¼ö
+void mouseCallback(ObjectID object, int x, int y, MouseAction action);
 
 //Àå¾Ö¹°
 ObjectID ob[4];
@@ -59,15 +62,20 @@ ObjectID createObject(const char* name, const char* image, SceneID scene, int x,
 //Ä³¸¯ÅÍ°¡ ÄÚÀÎ¿¡ ºÎµúÇû´ÂÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö.
 //ºÎµúÈ÷¸é ÄÚÀÎÀÌ »ç¶óÁö¸é¼­ Á¡¼ö°¡ Áõ°¡
 void CoinCheck() {
-	if (coin_silverX < 100 + 576 && coin_silverX > 100 && coin_silverY > 100 && coin_silverY < 100 + 324) {
-		hideObject(silver);
-		coin_count += 1;
+	for (int j = 0; j < 4; j++) {
+		//xÁÂÇ¥°¡ coinÀÇ xÁÂÇ¥º¸´Ù Å©°í yÁÂÇ¥°¡ coinÀÇ yÁÂÇ¥º¸´Ù Å©¸é (Áï, Å¸ÀÌ¹Ö¿¡ ¸Â°Ô Á¡ÇÁÇÏ¸é -> ¾ÆÁ÷ ¼öÁ¤ ¸øÇÔ. ¼öÁ¤ÇØ¾ßÇØ!)
+
+		if (x >= coin_silverX[j] && y >= coin_silverY[j]) {
+			hideObject(silver[j]);
+			coin_count += 1;
+		}
+
+		if (x >= coin_goldX[j] && y >= coin_goldY[j]) {
+			hideObject(gold[j]);
+			coin_count += 10;
+		}
 	}
 
-	if (coin_goldX < 100 + 576 && coin_goldX > 100 && coin_goldY > 100 && coin_goldY < 100 + 324) {
-		hideObject(gold);
-		coin_count += 10;
-	}
 }
 
 void keyboardCallback(KeyCode code, KeyState state)	//Á¡ÇÁÅ° ÀÌÁßÁ¡ÇÁ¸¦ À§ÇØ Á¡ÇÁÅ°:¸±¸®Áî »óÅÂ->Å¸ÀÌ¸Ó¿¡¼­ Ã³¸®
@@ -79,6 +87,20 @@ void keyboardCallback(KeyCode code, KeyState state)	//Á¡ÇÁÅ° ÀÌÁßÁ¡ÇÁ¸¦ À§ÇØ Á¡Ç
 		stopTimer(timerRelease);	//ÀÌÀü¿¡ ½ÇÇàµÈ Å¸ÀÌ¸Ó Ãë¼Ò
 		setTimer(timerRelease, DELAY_TIME);	//Á¡ÇÁÅ° ¸±¸®Áî Å¸ÀÌ¸Ó ´Ù½Ã ½ÇÇà
 		startTimer(timerRelease);	//Å¸ÀÌ¸Ó ½ÃÀÛ
+	}
+}
+
+void mouseCallback(ObjectID object, int x, int y, MouseAction action)
+{
+	if (object == start_button) {
+		enterScene(main_scene);
+		startTimer(ob_timer);
+		startTimer(check_timer);
+		startTimer(ob_speed_timer);
+		startTimer(barTimer);
+	}
+	else if (object == end_button) {
+		endGame();
 	}
 }
 
@@ -105,7 +127,11 @@ void timerCallback(TimerID timer)
 			hideObject(ob[i]);//ÇÊ¿ä¾øÀ»Áöµµ
 			if (ob_x[i] >= -100) {
 				ob_x[i] -= speed;
+				coin_silverX[i] -= speed;
+				coin_goldX[i] -= speed;
 				locateObject(ob[i], main_scene, ob_x[i], 50);
+				locateObject(silver[i], main_scene, coin_silverX[i], coin_silverY[i]);
+				locateObject(gold[i], main_scene, coin_goldX[i], coin_goldY[i]);
 				showObject(ob[i]);//ÇÊ¿ä¾øÀ»Áöµµ
 			}
 			else if (ob_x[i] < -100) {
@@ -174,12 +200,12 @@ void timerCallback(TimerID timer)
 			if (ob_x[i] < 271 && ob_x[i]> 94) {
 				if (ob_check[i] == 1) {  // ³·Àº Àå¾Ö¹°ÀÇ °æ¿ì
 					if (y == 50) {
-						endGame();
+						enterScene(start_scene);
 					}
 				}
 				else if (ob_check[i] == 2) {
 					if (y == 50 || y == 200) {  //³ôÀº Àå¾Ö¹°ÀÇ °æ¿ì
-						endGame();
+						enterScene(start_scene);
 					}
 				}
 			}
@@ -200,10 +226,26 @@ int main() {
 
 	setTimerCallback(timerCallback);
 	setKeyboardCallback(keyboardCallback);
+	setMouseCallback(mouseCallback);
 
 	cat = createObject("cat", "images\\cat.png", main_scene, x, y, true);
-	silver = createObject("silver", "images\\silver.png", main_scene, coin_silverX, coin_silverY, true);
-	gold = createObject("gold", "images\\gold.png", main_scene, coin_goldX, coin_goldY, true);
+	
+	for (int i = 0; i < 4; i++) {
+		ob_x[i] = 500 + 500 * i;
+		coin_silverX[i] = 500 + 500 * i;
+		coin_silverY[i] = 200;
+		coin_goldX[i] = 500 + 500 * i;
+		coin_goldY[i] = 200;
+		ob[i] = createObject("ob_block", "images\\ob_low.png", main_scene, ob_x[i], 0, true);
+
+		silver[i] = createObject("silver", "images\\silver.png", main_scene, coin_silverX[i], coin_silverY[i], true);
+		scaleObject(silver[i], .25f);
+		gold[i] = createObject("gold", "images\\gold.png", main_scene, coin_goldX[i], coin_goldY[i], true);
+		scaleObject(gold[i], .25f);
+	}
+
+	start_button = createObject("start_button", "images\\start_button.png", start_scene, 590, 50, true);
+	end_button = createObject("end_button", "images\\end_button.png", end_scene, 590, 50, true);
 
 	bar = createObject("bar","images\\bar.png",main_scene, 320, 680, true);	//¹Ù
 	barCh = createObject("barCh","images\\cat.png", main_scene, 320, 680, true);	//¹Ù¸¦ ¿òÁ÷ÀÌ´Â Ä³¸¯ÅÍ
@@ -214,17 +256,6 @@ int main() {
 	ob_speed_timer = createTimer(5.0f);
 	ob_timer = createTimer(0.01f);
 	check_timer = createTimer(0.01f);
-
-	for (int i = 0; i < 4; i++) {
-		ob_x[i] = 500 + 500 * i;
-		ob_check[i] = 1;
-		ob[i] = createObject("ob_block", "images\\ob_low.png", main_scene, ob_x[i], 50, true);
-	}
-
-	startTimer(ob_timer);
-	startTimer(check_timer);
-	startTimer(ob_speed_timer);
-	startTimer(barTimer);
 
 	startGame(start_scene);
 }
