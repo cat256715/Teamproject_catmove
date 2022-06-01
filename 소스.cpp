@@ -92,14 +92,14 @@ void keyboardCallback(KeyCode code, KeyState state)	//¡°«¡≈∞ ¿Ã¡ﬂ¡°«¡∏¶ ¿ß«ÿ ¡°«
 
 void mouseCallback(ObjectID object, int x, int y, MouseAction action)
 {
-	if (object == start_button) {
+	if (object == start_button) { //Ω√¿€ πˆ∆∞¿ª ¥©∏£∏È ≈∏¿Ã∏” Ω√¿€
 		enterScene(main_scene);
 		startTimer(ob_timer);
 		startTimer(check_timer);
 		startTimer(ob_speed_timer);
 		startTimer(barTimer);
 	}
-	else if (object == end_button) {
+	else if (object == end_button) { //ø£µÂ πˆ∆∞¿ª ¥©∏£∏È ≈∏¿Ã∏” ¡æ∑·
 		endGame();
 	}
 }
@@ -200,12 +200,12 @@ void timerCallback(TimerID timer)
 			if (ob_x[i] < 271 && ob_x[i]> 94) {
 				if (ob_check[i] == 1) {  // ≥∑¿∫ ¿Âæ÷π∞¿« ∞ÊøÏ
 					if (y == 50) {
-						enterScene(start_scene);
+						enterScene(start_scene); //¿Âæ÷π∞∞˙ ¥Í¿∏∏È ¥ŸΩ√ √ ±‚ »≠∏È¿∏∑Œ
 					}
 				}
 				else if (ob_check[i] == 2) {
 					if (y == 50 || y == 200) {  //≥Ù¿∫ ¿Âæ÷π∞¿« ∞ÊøÏ
-						enterScene(start_scene);
+						enterScene(start_scene); //¿Âæ÷π∞∞˙ ¥Í¿∏∏È ¥ŸΩ√ √ ±‚ »≠∏È¿∏∑Œ
 					}
 				}
 			}
